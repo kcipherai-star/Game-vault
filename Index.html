@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameVault - Your Gaming Identity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151932;
+            --bg-card: #1a1f3a;
+            --accent-primary: #00f0ff;
+            --accent-secondary: #7b2ff7;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --success: #00ff88;
+            --warning: #ffaa00;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0) translateX(0); 
+                opacity: 0.4;
+            }
+            50% { 
+                transform: translateY(-100vh) translateX(100px); 
+                opacity: 0.8;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5)); 
+            }
+          .streak-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .streak-icon {
+            font-size: 20px;
+            animation: flicker 1.5s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .profile-section {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+      
+            50% { 
+                filter: drop-shadow(0 0 20px rgba(123, 47, 247, 0.8)); 
+            }
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+      .streak-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .streak-icon {
+            font-size: 20px;
+            animation: flicker 1.5s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .profile-section {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.2);
+            border-color: var(--accent-primary);
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin: 0 auto 20px;
+            animation: rotate 10s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .avatar:hover {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .username {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .bio {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+              }
+      .level-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 2px solid var(--accent-primary);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            animation: borderGlow 2s infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { border-color: var(--accent-primary); }
+            50% { border-color: var(--accent-secondary); }
+        }
+
+        .level-number {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .xp-container {
+            margin-bottom: 20px;
+        }
+
+        .xp-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .xp-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            transition: width 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            to { left: 100%; }
+        }
+
+        .completion-circle {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: var(--bg-secondary);
+            stroke-width: 10;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke: var(--accent-primary);
+            stroke-width: 10;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s ease-out;
+            filter: drop-shadow(0 0 10px var(--accent-primary));
+        }
+
+        .completion-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+            background: var(--bg-card);
+            box-shadow: 0 5px 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .achievements-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement-card {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card.locked {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .achievement-card.unlocked {
+            border-color: var(--success);
+            animation: unlockPulse 0.6s ease-out;
+        }
+
+        @keyframes unlockPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+        }
+
+        .achievement-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .achievement-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .achievement-xp {
+            font-size: 12px;
+            color: var(--accent-primary);
+            margin-top: 5px;
+        }
+
+        .games-section {
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .games-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            animation: cardSlideIn 0.6s ease-out backwards;
+          }
+      @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) rotateX(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 240, 255, 0.3);
+            border-color: var(--accent-primary);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-header {
+            height: 120px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        .game-body {
+            padding: 20px;
+        }
+
+        .game-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .game-platform {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(0, 240, 255, 0.2);
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .game-stat {
+            background: var(--bg-secondary);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .game-stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .game-stat-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .icon-btn {
+            flex: 1;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--accent-primary);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+      }
+      .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .color-picker:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            background: var(--bg-card);
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 2px solid var(--success);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+            z-index: 2000;
+            animation: slideInRight 0.5s ease-out, slideOutRight 0.5s ease-out 2.5s forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            font-size: 40px;
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .notification-text h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .notification-text p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .notification-xp {
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        .level-up-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.2), rgba(10, 14, 39, 0.95));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: fadeIn 0.3s ease-out, screenShake 0.5s ease-out;
+        }
+
+        @keyframes screenShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .level-up-content {
+            text-align: center;
+            animation: zoomIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5) rotate(-180deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .level-up-text {
+            font-size: 72px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            animation: glow 1s ease-in-out infinite;
+        }
+
+        .level-up-number {
+            font-size: 120px;
+            font-weight: bold;
+            color: var(--accent-primary);
+            animation: numberSpin 0.8s ease-out;
+        }
+
+        @keyframes numberSpin {
+            from {
+                opacity: 0;
+                transform: rotateY(0deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateY(720deg);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-primary);
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-section {
+                grid-template-columns: 1fr;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .achievements-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+      .tooltip {
+            position: relative;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-primary);
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles" id="particles"></div>
+
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">⚡ GameVault</div>
+            <div class="nav-actions">
+                <div class="streak-display">
+                    <span class="streak-icon">🔥</span>
+                    <span id="streakCount">0</span>
+                    <span style="font-size: 12px;">day streak</span>
+                </div>
+                <button class="btn btn-primary" onclick="showAddGameModal()">
+                    ➕ Add Game
+                </button>
+            </div>
+        </nav>
+
+        <div class="profile-section">
+            <div class="profile-card">
+                <div class="avatar" id="avatar">🎮</div>
+                <div class="username" id="username">GamerPro</div>
+                <div class="bio" id="bio">Passionate gamer | Achievement hunter</div>
+
+                <div class="level-badge">
+                    <span style="font-size: 20px;">⭐</span>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Level</div>
+                        <div class="level-number" id="level">1</div>
+                    </div>
+                </div>
+
+                <div class="xp-container">
+                    <div class="xp-label">
+                        <span>XP Progress</span>
+                        <span><span id="currentXP">0</span> / <span id="nextLevelXP">500</span></span>
+                    </div>
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="completion-circle">
+                    <svg width="120" height="120">
+                        <circle class="circle-bg" cx="60" cy="60" r="52" />
+                        <circle class="circle-progress" id="completionCircle" cx="60" cy="60" r="52" 
+                            stroke-dasharray="326.73" stroke-dashoffset="326.73" />
+                    </svg>
+                    <div class="completion-text" id="completionText">0%</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item tooltip" data-tooltip="Total games added">
+                        <div class="stat-value" id="totalGames">0</div>
+                        <div class="stat-label">Games</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="Total gaming hours">
+                        <div class="stat-value" id="totalHours">0</div>
+                        <div class="stat-label">Hours</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="Achievements unlocked">
+                        <div class="stat-value" id="totalAchievements">0</div>
+                        <div class="stat-label">Achievements</div>
+                    </div>
+                    <div class="stat-item tooltip" data-tooltip="Your global rank">
+                        <div class="stat-value" id="globalRank">#-</div>
+                        <div class="stat-label">Rank</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="achievements-panel">
+                <div class="section-title">
+                    🏆 Achievements
+                </div>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Achievements will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="games-section">
+            <div class="games-header">
+                <div class="section-title">
+                    🎮 My Games
+                </div>
+            </div>
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Game Modal -->
+    <div id="gameModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Add New Game</div>
+                <button class="close-btn" onclick="closeGameModal()">✕</button>
+            </div>
+
+            <form id="gameForm" onsubmit="saveGame(event)">
+                <div class="form-group">
+                    <label class="form-label">Game Name *</label>
+                    <input type="text" class="form-input" id="gameName" placeholder="Enter game name" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Platform *</label>
+                        <select class="form-select" id="gamePlatform" required>
+                            <option value="PC">PC</option>
+                            <option value="PlayStation">PlayStation</option>
+                            <option value="Xbox">Xbox</option>
+                            <option value="Nintendo">Nintendo</option>
+                            <option value="Mobile">Mobile</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Rank/Level</label>
+                        <input type="text" class="form-input" id="gameRank" placeholder="e.g., Diamond, Level 50">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Hours Played</label>
+                        <input type="number" class="form-input" id="gameHours" placeholder="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Win Rate (%)</label>
+                        <input type="number" class="form-input" id="gameWinRate" placeholder="0" min="0" max="100">
+                    </div>
+                </div>
+                 <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">K/D Ratio</label>
+                        <input type="number" step="0.01" class="form-input" id="gameKD" placeholder="0.00" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Achievements</label>
+                        <input type="number" class="form-input" id="gameAchievements" placeholder="0" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Card Color</label>
+                    <input type="color" class="color-picker" id="gameColor" value="#00f0ff">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeGameModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">Save Game</button>
+                </div>
+            </form>
+        </div>
+    </div>
+     <script>
+        // Data Models
+        let userData = {
+            username: 'GamerPro',
+            avatar: '🎮',
+            bio: 'Passionate gamer | Achievement hunter',
+            xp: 0,
+            level: 1,
+            streak: 0,
+            lastLogin: null,
+            profileCompletion: 20,
+            achievements: [],
+            games: []
+        };
+
+        let editingGameId = null;
+
+        const achievementsList = [
+            { id: 'first_game', name: 'First Steps', desc: 'Add your first game', xp: 50, icon: '🎯', requirement: 1 },
+            { id: 'collector', name: 'Collector', desc: 'Add 5 games', xp: 100, icon: '📚', requirement: 5 },
+            { id: 'hoarder', name: 'Game Hoarder', desc: 'Add 10 games', xp: 150, icon: '🎮', requirement: 10 },
+            { id: 'completionist', name: 'Completionist', desc: '100% profile completion', xp: 150, icon: '✨', requirement: 100 },
+            { id: 'streak_7', name: 'Dedicated', desc: '7-day login streak', xp: 100, icon: '🔥', requirement: 7 },
+            { id: 'streak_30', name: 'Committed', desc: '30-day login streak', xp: 300, icon: '💎', requirement: 30 },
+            { id: 'level_5', name: 'Rising Star', desc: 'Reach level 5', xp: 75, icon: '⭐', requirement: 5 },
+            { id: 'level_10', name: 'Elite Player', desc: 'Reach level 10', xp: 150, icon: '👑', requirement: 10 },
+            { id: 'social', name: 'Social Gamer', desc: 'Share your profile', xp: 50, icon: '🤝', requirement: 1 }
+        ];
+
+        // Initialize App
+        function init() {
+            loadData();
+            checkDailyLogin();
+            createParticles();
+            renderAchievements();
+            renderGames();
+            updateUI();
+        }
+
+        // Particle System
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+       // Local Storage
+        function saveData() {
+            localStorage.setItem('gamevault_user', JSON.stringify(userData));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('gamevault_user');
+            if (saved) {
+                userData = JSON.parse(saved);
+            }
+        }
+
+        // Daily Login
+        function checkDailyLogin() {
+            const today = new Date().toDateString();
+            if (userData.lastLogin !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (userData.lastLogin === yesterday.toDateString()) {
+                    userData.streak++;
+                } else if (userData.lastLogin !== null) {
+                    userData.streak = 1;
+                } else {
+                    userData.streak = 1;
+                }
+
+                userData.lastLogin = today;
+                addXP(20);
+                checkAchievement('streak_7');
+                checkAchievement('streak_30');
+                saveData();
+            }
+        }
+
+        // XP System
+        function addXP(amount) {
+            userData.xp += amount;
+            const newLevel = Math.floor(userData.xp / 500) + 1;
+            
+            if (newLevel > userData.level) {
+                userData.level = newLevel;
+                showLevelUp(newLevel);
+                checkAchievement('level_5');
+                checkAchievement('level_10');
+            }
+          saveData();
+            updateUI();
+        }
+
+        // Achievement System
+        function checkAchievement(achievementId) {
+            const achievement = achievementsList.find(a => a.id === achievementId);
+            if (!achievement) return;
+
+            if (userData.achievements.includes(achievementId)) return;
+
+            let unlocked = false;
+
+            switch (achievementId) {
+                case 'first_game':
+                    unlocked = userData.games.length >= 1;
+                    break;
+                case 'collector':
+                    unlocked = userData.games.length >= 5;
+                    break;
+                case 'hoarder':
+                    unlocked = userData.games.length >= 10;
+                    break;
+                case 'completionist':
+                    unlocked = userData.profileCompletion >= 100;
+                    break;
+                case 'streak_7':
+                    unlocked = userData.streak >= 7;
+                    break;
+                case 'streak_30':
+                    unlocked = userData.streak >= 30;
+                    break;
+                case 'level_5':
+                    unlocked = userData.level >= 5;
+                    break;
+                case 'level_10':
+                    unlocked = userData.level >= 10;
+                    break;
+            }
+
+            if (unlocked) {
+                userData.achievements.push(achievementId);
+                showAchievementUnlocked(achievement);
+                addXP(achievement.xp);
+                saveData();
+                renderAchievements();
+            }
+        }
+
+        function checkAllAchievements() {
+            achievementsList.forEach(achievement => {
+                checkAchievement(achievement.id);
+            });
+        }
+
+        // Profile Completion
+        function calculateProfileCompletion() {
+            let completion = 0;
+            
+            if (userData.username && userData.username !== 'GamerPro') completion += 15;
+            if (userData.bio && userData.bio !== 'Passionate gamer | Achievement hunter') completion += 15;
+            if (userData.games.length >= 1) completion += 20;
+            if (userData.games.length >= 3) completion += 20;
+            if (userData.games.length >= 5) completion += 15;
+            if (userData.achievements.length >= 3) completion += 15;
+
+            userData.profileCompletion = completion;
+            checkAchievement('completionist');
+            saveData();
+        }
+
+        // UI Updates
+        function updateUI() {
+            // Profile Stats
+            document.getElementById('username').textContent = userData.username;
+            document.getElementById('bio').textContent = userData.bio;
+            document.getElementById('avatar').textContent = userData.avatar;
+            document.getElementById('level').textContent = userData.level;
+            document.getElementById('streakCount').textContent = userData.streak;
+       // XP Bar
+            const xpInLevel = userData.xp % 500;
+            const xpProgress = (xpInLevel / 500) * 100;
+            document.getElementById('currentXP').textContent = xpInLevel;
+            document.getElementById('nextLevelXP').textContent = 500;
+            document.getElementById('xpFill').style.width = xpProgress + '%';
+
+            // Completion Circle
+            calculateProfileCompletion();
+            const circumference = 326.73;
+            const offset = circumference - (userData.profileCompletion / 100) * circumference;
+            document.getElementById('completionCircle').style.strokeDashoffset = offset;
+            document.getElementById('completionText').textContent = userData.profileCompletion + '%';
+
+            // Stats
+            document.getElementById('totalGames').textContent = userData.games.length;
+            const totalHours = userData.games.reduce((sum, game) => sum + (parseInt(game.hours) || 0), 0);
+            document.getElementById('totalHours').textContent = totalHours;
+            const totalAchievements = userData.games.reduce((sum, game) => sum + (parseInt(game.achievements) || 0), 0);
+            document.getElementById('totalAchievements').textContent = totalAchievements;
+            
+            const rank = Math.max(1000 - (userData.level * 50) - (userData.games.length * 10), 1);
+            document.getElementById('globalRank').textContent = '#' + rank;
+        }
+
+        // Render Achievements
+        function renderAchievements() {
+            const grid = document.getElementById('achievementsGrid');
+            grid.innerHTML = '';
+
+            achievementsList.forEach(achievement => {
+                const unlocked = userData.achievements.includes(achievement.id);
+                const card = document.createElement('div');
+                card.className = `achievement-card ${unlocked ? 'unlocked' : 'locked'}`;
+                card.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-name">${achievement.name}</div>
+                    <div class="achievement-desc">${achievement.desc}</div>
+                    <div class="achievement-xp">+${achievement.xp} XP</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Render Games
+        function renderGames() {
+            const grid = document.getElementById('gamesGrid');
+            
+            if (userData.games.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎮</div>
+                        <div class="empty-text">No games added yet</div>
+                        <button class="btn btn-primary" onclick="showAddGameModal()">Add Your First Game</button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            userData.games.forEach((game, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.style.animationDelay = (index * 0.1) + 's';
+                
+                card.innerHTML = `
+                    <div class="game-header" style="background: linear-gradient(135deg, ${game.color}, ${adjustColor(game.color, -30)})">
+                        ${getGameEmoji(game.platform)}
+                    </div>
+                    <div class="game-body">
+                        <div class="game-name">${game.name}</div>
+                        <span class="game-platform">${game.platform}</span>
+                        ${game.rank ? `<div style="margin-top: 10px; color: var(--accent-primary); font-weight: bold;">🏆 ${game.rank}</div>` : ''}
+                        <div class="game-stats">
+                            <div class="game-stat">
+                                <div class="game-stat-value">${game.hours}h</div>
+                                <div class="game-stat-label">Played</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${game.winRate}%</div>
+                                <div class="game-stat-label">Win Rate</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${game.kd}</div>
+                                <div class="game-stat-label">K/D</div>
+                            </div>
+                            <div class="game-stat">
+                                <div class="game-stat-value">${game.achievements}</div>
+                                <div class="game-stat-label">Achievements</div>
+                            </div>
+                        </div>
+                        <div class="game-actions">
+                            <button class="icon-btn" onclick="editGame('${game.id}')">
+                                ✏️ Edit
+                            </button>
+                            <button class="icon-btn" onclick="deleteGame('${game.id}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Game Modal
+        function showAddGameModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Game';
+            document.getElementById('gameForm').reset();
+            document.getElementById('gameColor').value = '#00f0ff';
+            editingGameId = null;
+            document.getElementById('gameModal').style.display = 'flex';
+        }
+
+        function closeGameModal() {
+            document.getElementById('gameModal').style.display = 'none';
+            editingGameId = null;
+        }
+
+        function editGame(gameId) {
+            const game = userData.games.find(g => g.id === gameId);
+            if (!game) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit Game';
+            document.getElementById('gameName').value = game.name;
+            document.getElementById('gamePlatform').value = game.platform;
+            document.getElementById('gameRank').value = game.rank;
+            document.getElementById('gameHours').value = game.hours;
+            document.getElementById('gameWinRate').value = game.winRate;
+            document.getElementById('gameKD').value = game.kd;
+            document.getElementById('gameAchievements').value = game.achievements;
+            document.getElementById('gameColor').value = game.color;
+            
+            editingGameId = gameId;
+            document.getElementById('gameModal').style.display = 'flex';
+        }
+
+        function saveGame(event) {
+            event.preventDefault();
+
+            const game = {
+                id: editingGameId || 'game_' + Date.now(),
+                name: document.getElementById('gameName').value,
+                platform: document.getElementById('gameP
